@@ -1,17 +1,13 @@
-import express from "express";
+import express, { json } from "express";
 import { connectDb } from "./config/database.js";
 import { User } from "./models/user.js";
 
 const app = express();
+app.use(json());
 
 app.post("/signup", async (req, res) => {
   try {
-    const user = new User({
-      firstName: "Rohan",
-      lastName: "Agrawal",
-      email: "agrawalrohan52@gmail.com",
-      password: "rohan@123",
-    });
+    const user = new User(req.body);
     await user.save();
     res.send("User successfully added");
   } catch (err) {
