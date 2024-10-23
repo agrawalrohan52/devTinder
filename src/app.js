@@ -1,19 +1,18 @@
 import express, { json } from "express";
 import { connectDb } from "./config/database.js";
-import { User } from "./models/user.js";
+import cookieParser from "cookie-parser";
+import authRouter from "./routes/auth.js";
+import profileRouter from "./routes/profile.js";
+import requestRouter from "./routes/request.js";
 
 const app = express();
-app.use(json());
 
-app.post("/signup", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.send("User successfully added");
-  } catch (err) {
-    res.status(400).send(`Error while saving the user. Error: ${err.message}`);
-  }
-});
+app.use(json());
+app.use(cookieParser());
+
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 
 connectDb()
   .then(() => {
